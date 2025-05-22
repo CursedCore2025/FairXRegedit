@@ -10,23 +10,27 @@ ___________        .__         ____  ___ __________                             
      \/         \/                   \_/         \/      \/ /_____/       \/      \/            
 '@
 
-$asciiArt -split "`n" | ForEach-Object {
+$asciiArt -split "n" | ForEach-Object {
     $color = Get-Random -InputObject $colors
     Write-Host $_ -ForegroundColor $color
 }
 
 $msgLines = @(
-    "[+] Your Sensi Has been Optimized By FairX Regedit",
-    "[+] Enjoy Smooth Aim",
-    "[+] Zero Aim Jitter",
-    "[+] Easy Drag Headshot"
+    "[+] Your Mouse is Connected With FairX Regedit",
+    "[+] Sensitivity Tweaked For Maximum Precision",
+    "[+] Drag Assist Enabled - Easy Headshots",
+    "[+] Low Input Lag Mode ON",
+    "[+] Hold LMB for Auto Drag Support",
+    "[*] Press F8 to Toggle ON/OFF"
 )
 $msgLines | ForEach-Object {
     Write-Host $_ -ForegroundColor Red
     Start-Sleep -Milliseconds 300
 }
 
-Start-Sleep -Seconds 1
+# Show initial status line
+Write-Host "`n----------------------------------------------------------------------------------"
+Write-Host "Status : ON"
 
 Add-Type -TypeDefinition @"
 using System;
@@ -45,12 +49,15 @@ public class FairXDragAssist {
 
     public const int MOUSEEVENTF_MOVE = 0x0001;
     public const int VK_LBUTTON = 0x01;
+    public const int VK_F8 = 0x77;
 
     [StructLayout(LayoutKind.Sequential)]
     public struct POINT {
         public int X;
         public int Y;
     }
+
+    public static bool Enabled = true;
 
     public static void Run() {
         POINT prev;
@@ -60,6 +67,20 @@ public class FairXDragAssist {
 
         while (true) {
             Thread.Sleep(5);
+            bool toggle = (GetAsyncKeyState(VK_F8) & 0x8000) != 0;
+
+            if (toggle && DateTime.Now.Millisecond % 2 == 0) {
+                Enabled = !Enabled;
+
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                Console.WriteLine("Status : " + (Enabled ? "ON " : "OFF"));
+                Console.Beep();
+                Thread.Sleep(400); // debounce
+            }
+
+            if (!Enabled)
+                continue;
+
             bool lmbDown = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
 
             if (lmbDown) {
