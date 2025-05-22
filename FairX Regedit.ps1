@@ -7,9 +7,10 @@ $asciiArt = @'
  \_____  \\__  \   / ___\_/ __ \ \     /   |       _// __ \ / ___\_/ __ \ / __ | |  \   __\
  /        \/ __ \_/ /_/  >  ___/ /     \   |    |   \  ___// /_/  >  ___// /_/ | |  ||  |  
 /_______  (____  /\___  / \___  >___/\  \  |____|_  /\___  >___  / \___  >____ | |__||__|  
-        \/     \//_____/      \/      \_/         \/     \/_____/      \/     \/           '@
+        \/     \//_____/      \/      \_/         \/     \/_____/      \/     \/             
+'@
 
-$asciiArt -split "n" | ForEach-Object {
+$asciiArt -split "`n" | ForEach-Object {
     $color = Get-Random -InputObject $colors
     Write-Host $_ -ForegroundColor $color
 }
