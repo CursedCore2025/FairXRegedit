@@ -48,7 +48,7 @@ $msgLines = @(
     "[+] Drag Assist Enabled - Easy Headshots",
     "[+] Low Input Lag Mode ON",
     "[+] Hold LMB for Auto Drag Support",
-    "[*] Press F8 to Toggle ON/OFF"
+    "[*] Press INS to Toggle ON/OFF"
 )
 $msgLines | ForEach-Object {
     Write-Host $_ -ForegroundColor Red
@@ -76,7 +76,7 @@ public class FairXDragAssist {
 
     public const int MOUSEEVENTF_MOVE = 0x0001;
     public const int VK_LBUTTON = 0x01;
-    public const int VK_F8 = 0x77;
+    public const int VK_INSERT = 0x2D;
 
     [StructLayout(LayoutKind.Sequential)]
     public struct POINT {
@@ -94,7 +94,7 @@ public class FairXDragAssist {
 
         while (true) {
             Thread.Sleep(5);
-            bool toggle = (GetAsyncKeyState(VK_F8) & 0x8000) != 0;
+            bool toggle = (GetAsyncKeyState(VK_INSERT) & 0x8000) != 0;
 
             if (toggle && DateTime.Now.Millisecond % 2 == 0) {
                 Enabled = !Enabled;
