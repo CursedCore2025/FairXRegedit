@@ -36,7 +36,7 @@ try {
 
 # Check if SID is authorized
 if ($rawData -notmatch $sid) {
-    Write-Host "`n[!] Chal MOtherchod Aukat bana pahale" -ForegroundColor Red
+    Write-Host "`n[!] Maa ke lode kharida tune ? Kharid na Bsdk !!" -ForegroundColor Red
     Start-Sleep -Seconds 2
     exit
 }
