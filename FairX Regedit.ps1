@@ -2,19 +2,46 @@ Clear-Host
 $colors = @("Red", "Yellow", "Cyan", "Green", "Magenta", "Blue", "White")
 
 $asciiArt = @'
-___________        .__         ____  ___ __________                              .___.__   __   
-\_   _____/_____   |__|_______ \   \/  / \______   \  ____     ____    ____    __| _/|__|_/  |_ 
- |    __)  \__  \  |  |\_  __ \ \     /   |       _/_/ __ \   / ___\ _/ __ \  / __ | |  |\   __\
- |     \    / __ \_|  | |  | \/ /     \   |    |   \\  ___/  / /_/  >\  ___/ / /_/ | |  | |  |  
- \___  /   (____  /|__| |__|   /___/\  \  |____|_  / \___  > \___  /  \___  >\____ | |__| |__|  
-     \/         \/                   \_/         \/      \/ /_____/       \/      \/            
+___________      .__      ____  ___   __________                         .___.__  __   
+\_   _____/____  |__|_____\   \/  /   \______   \ ____   ____   ____   __| _/|__|/  |_ 
+ |    __) \__  \ |  \_  __ \     /     |       _// __ \ / ___\_/ __ \ / __ | |  \   __\
+ |     \   / __ \|  ||  | \/     \     |    |   \  ___// /_/  >  ___// /_/ | |  ||  |  
+ \___  /  (____  /__||__| /___/\  \    |____|_  /\___  >___  / \___  >____ | |__||__|  
+     \/        \/               \_/           \/     \/_____/      \/     \/             
 '@
 
-$asciiArt -split "n" | ForEach-Object {
+$asciiArt -split "`n" | ForEach-Object {
     $color = Get-Random -InputObject $colors
     Write-Host $_ -ForegroundColor $color
 }
 
+# Get current user's SID
+try {
+    $sid = ([System.Security.Principal.WindowsIdentity]::GetCurrent()).User.Value
+    Write-Host "`n[*] Your SID: $sid" -ForegroundColor Yellow
+} catch {
+    Write-Host "[!] Failed to get SID" -ForegroundColor Red
+    exit
+}
+
+# URL for public GitHub raw content
+$authURL = "https://raw.githubusercontent.com/Harshkashyap11/fairx/refs/heads/main/hwid"
+
+try {
+    $rawData = Invoke-RestMethod -Uri $authURL -UseBasicParsing
+} catch {
+    Write-Host "`n[!] Failed to fetch authorized SIDs from server." -ForegroundColor Red
+    exit
+}
+
+# Check if SID is authorized
+if ($rawData -notmatch $sid) {
+    Write-Host "`n[!] Unauthorized user. Access denied." -ForegroundColor Red
+    Start-Sleep -Seconds 2
+    exit
+}
+
+# Display messages
 $msgLines = @(
     "[+] Your Mouse is Connected With FairX Regedit",
     "[+] Sensitivity Tweaked For Maximum Precision",
@@ -28,10 +55,10 @@ $msgLines | ForEach-Object {
     Start-Sleep -Milliseconds 300
 }
 
-# Show initial status line
-Write-Host "n----------------------------------------------------------------------------------"
+Write-Host "`n----------------------------------------------------------------------------------"
 Write-Host "Status : ON"
 
+# C# code for drag assist
 Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
@@ -71,7 +98,6 @@ public class FairXDragAssist {
 
             if (toggle && DateTime.Now.Millisecond % 2 == 0) {
                 Enabled = !Enabled;
-
                 Console.SetCursorPosition(0, Console.CursorTop - 1);
                 Console.WriteLine("Status : " + (Enabled ? "ON " : "OFF"));
                 Console.Beep();
